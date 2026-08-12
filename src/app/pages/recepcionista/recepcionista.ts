@@ -1,9 +1,27 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
+import { Router, RouterOutlet, RouterLink, RouterLinkActive } from '@angular/router';
+import { UsuarioAuthService } from '../../services/usuario-auth-service';
 
 @Component({
   selector: 'app-recepcionista',
-  imports: [],
+  standalone: true,
+  imports: [RouterOutlet, RouterLink, RouterLinkActive],
   templateUrl: './recepcionista.html',
-  styleUrl: './recepcionista.css',
+  styleUrl: './recepcionista.css'
 })
-export class Recepcionista {}
+export class Recepcionista {
+  private authService = inject(UsuarioAuthService);
+  private router = inject(Router);
+
+  usuario = this.authService.obtenerUsuario();
+
+  get iniciales(): string {
+    if (!this.usuario) return '';
+    return (this.usuario.nombre[0] ?? '') + (this.usuario.apellido[0] ?? '');
+  }
+
+  cerrarSesion() {
+    this.authService.cerrarSesion();
+    this.router.navigate(['/login']);
+  }
+}

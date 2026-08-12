@@ -55,21 +55,18 @@ export class Login {
   }
 
   private redirigirSegunRol(rol: string) {
-    switch (rol) {
-      case 'ADMINISTRADOR':
-        this.router.navigate(['/admin']);
-        break;
-      case 'VETERINARIO':
-        this.router.navigate(['/veterinario']);
-        break;
-      case 'RECEPCIONISTA':
-        this.router.navigate(['/recepcionista']);
-        break;
-      case 'CLIENTE':
-        this.router.navigate(['/cliente']);
-        break;
-      default:
-        this.mensajeError = 'Rol no reconocido'; // rol no contemplado
+  switch (rol) {
+    case 'ADMINISTRADOR':
+      this.router.navigate(['/admin']);
+      break;
+    case 'VETERINARIO':
+      this.router.navigate(['/veterinario']);
+      break;
+    case 'RECEPCIONISTA':
+      this.router.navigate(['/recepcionista']);
+      break;
+    default:
+      this.mensajeError = 'Rol no reconocido';
     }
   }
 }

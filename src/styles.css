@@ -31,6 +31,13 @@
   --radius-lg: 1rem;
   --radius-xl: 1.5rem;
 
+  /* Espaciado */
+  --spacing-xs: 4px;
+  --spacing-sm: 12px;
+  --spacing-md: 24px;
+  --spacing-lg: 40px;
+  --spacing-xl: 64px;
+
   /* Tipografía */
   --text-headline-lg: 32px;
   --text-headline-lg--line-height: 40px;
@@ -56,6 +63,7 @@
   --text-label-md--font-weight: 600;
   --text-label-md--letter-spacing: 0.01em;
 }
+
 .material-symbols-outlined {
   font-family: 'Material Symbols Outlined';
   font-weight: normal;
