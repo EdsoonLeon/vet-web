@@ -56,6 +56,20 @@
   --text-label-md--font-weight: 600;
   --text-label-md--letter-spacing: 0.01em;
 }
+.material-symbols-outlined {
+  font-family: 'Material Symbols Outlined';
+  font-weight: normal;
+  font-style: normal;
+  font-size: 24px;
+  line-height: 1;
+  letter-spacing: normal;
+  text-transform: none;
+  white-space: nowrap;
+  word-wrap: normal;
+  direction: ltr;
+  -webkit-font-feature-settings: 'liga';
+  font-feature-settings: 'liga';
+}
 
 body {
   font-family: var(--font-sans);

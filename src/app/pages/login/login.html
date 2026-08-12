@@ -61,7 +61,10 @@
               <p class="text-label-sm text-error">La contraseña es obligatoria.</p>
             }
           </div>
-
+            <!-- Error del backend (credenciales incorrectas, usuario no encontrado, etc.) -->
+          @if (mensajeError) {
+            <p class="text-label-sm text-error text-center">{{ mensajeError }}</p>
+          }
           <!-- Botón -->
           <button
             type="submit"
