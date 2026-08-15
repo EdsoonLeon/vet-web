@@ -4,11 +4,12 @@ import { MascotaService } from '../../../services/mascota-service';
 import { ClienteService } from '../../../services/cliente-service';
 import { Mascota } from '../../../models/mascota';
 import { Cliente } from '../../../models/cliente';
+import { ConfirmModal } from '../../../components/confirm-modal/confirm-modal';
 
 @Component({
   selector: 'app-mascotas',
   standalone: true,
-  imports: [ReactiveFormsModule],
+  imports: [ReactiveFormsModule, ConfirmModal],
   templateUrl: './mascotas.html',
   styleUrl: './mascotas.css'
 })
@@ -23,6 +24,9 @@ export class Mascotas implements OnInit {
   mostrarFormulario = false;
   mascotaEditandoId: number | null = null;
   mensajeError = signal('');
+
+  mostrarConfirmacion = false;
+  idAEliminar: number | null = null;
 
   mascotaForm = this.fb.group({
     nombre: ['', Validators.required],
@@ -108,11 +112,25 @@ export class Mascotas implements OnInit {
     }
   }
 
-  eliminar(id: number) {
-    this.mascotaService.eliminarMascota(id).subscribe({
+  pedirEliminar(id: number) {
+    this.idAEliminar = id;
+    this.mostrarConfirmacion = true;
+  }
+
+  confirmarEliminar() {
+    this.mostrarConfirmacion = false;
+    if (this.idAEliminar === null) return;
+
+    this.mascotaService.eliminarMascota(this.idAEliminar).subscribe({
       next: () => this.cargarMascotas(),
       error: () => this.mensajeError.set('No se pudo desactivar la mascota')
     });
+    this.idAEliminar = null;
+  }
+
+  cancelarEliminar() {
+    this.mostrarConfirmacion = false;
+    this.idAEliminar = null;
   }
 
   activar(id: number) {

@@ -83,7 +83,7 @@
                 <span class="material-symbols-outlined text-lg">edit</span>
               </button>
               @if (cliente.activo) {
-                <button (click)="eliminar(cliente.id)" class="p-xs text-on-surface-variant hover:text-error transition-colors" title="Desactivar">
+                <button (click)="pedirEliminar(cliente.id)" class="p-xs text-on-surface-variant hover:text-error transition-colors" title="Desactivar">
                   <span class="material-symbols-outlined text-lg">person_off</span>
                 </button>
               } @else {
@@ -104,3 +104,12 @@
     </table>
   </div>
 </div>
+
+<app-confirm-modal
+  [visible]="mostrarConfirmacion"
+  titulo="Desactivar cliente"
+  mensaje="¿Seguro que quieres desactivar este cliente? Podrás reactivarlo después."
+  textoConfirmar="Desactivar"
+  (confirmado)="confirmarEliminar()"
+  (cancelado)="cancelarEliminar()"
+/>

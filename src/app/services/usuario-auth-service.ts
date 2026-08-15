@@ -33,10 +33,14 @@ export class UsuarioAuthService {
       );
   }
 
+  
   private guardarUsuario(usuario: Usuario): void {
     localStorage.setItem('usuario', JSON.stringify(usuario));
     // guarda el usuario como texto (JSON) en el navegador
   }
+  registrarUsuario(datos: any): Observable<Usuario> {
+  return this.http.post<Usuario>(`${this.urlBase}/registrar`, datos);
+}
 
   obtenerUsuario(): Usuario | null {
     const data = localStorage.getItem('usuario');

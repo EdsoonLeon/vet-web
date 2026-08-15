@@ -1,6 +1,6 @@
 @import "tailwindcss";
 
-@theme {
+@theme {  
   --font-sans: "Plus Jakarta Sans", sans-serif;
 
   /* Colores */

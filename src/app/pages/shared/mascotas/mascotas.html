@@ -95,7 +95,7 @@
                 <span class="material-symbols-outlined text-lg">edit</span>
               </button>
               @if (mascota.activo) {
-                <button (click)="eliminar(mascota.id)" class="p-xs text-on-surface-variant hover:text-error transition-colors" title="Desactivar">
+                <button (click)="pedirEliminar(mascota.id)" class="p-xs text-on-surface-variant hover:text-error transition-colors" title="Desactivar">
                   <span class="material-symbols-outlined text-lg">visibility_off</span>
                 </button>
               } @else {
@@ -116,3 +116,12 @@
     </table>
   </div>
 </div>
+
+<app-confirm-modal
+  [visible]="mostrarConfirmacion"
+  titulo="Desactivar mascota"
+  mensaje="¿Seguro que quieres desactivar esta mascota? Podrás reactivarla después."
+  textoConfirmar="Desactivar"
+  (confirmado)="confirmarEliminar()"
+  (cancelado)="cancelarEliminar()"
+/>

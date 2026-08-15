@@ -101,7 +101,7 @@
               <button (click)="abrirEditar(cita)" class="p-xs text-on-surface-variant hover:text-primary transition-colors" title="Editar fecha/hora">
                 <span class="material-symbols-outlined text-lg">edit</span>
               </button>
-              <button (click)="cancelar(cita.id)" class="p-xs text-on-surface-variant hover:text-error transition-colors" title="Cancelar cita">
+              <button (click)="pedirCancelar(cita.id)" class="p-xs text-on-surface-variant hover:text-error transition-colors" title="Cancelar cita">
                 <span class="material-symbols-outlined text-lg">event_busy</span>
               </button>
             </td>
@@ -117,3 +117,12 @@
     </table>
   </div>
 </div>
+
+<app-confirm-modal
+  [visible]="mostrarConfirmacion"
+  titulo="Cancelar cita"
+  mensaje="¿Seguro que quieres cancelar esta cita?"
+  textoConfirmar="Cancelar cita"
+  (confirmado)="confirmarCancelacion()"
+  (cancelado)="cerrarConfirmacion()"
+/>

@@ -18,6 +18,10 @@ export class CitaService {
     return this.http.get<Cita[]>(this.urlBase);
   }
 
+  listarPorVeterinario(veterinarioId: number): Observable<Cita[]> {
+    return this.http.get<Cita[]>(`${this.urlBase}/veterinario/${veterinarioId}`);
+  }
+
   obtenerPorId(id: number): Observable<Cita> {
     return this.http.get<Cita>(`${this.urlBase}/${id}`);
   }

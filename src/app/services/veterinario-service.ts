@@ -1,6 +1,6 @@
 import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { Observable, map } from 'rxjs';
 import { Veterinario } from '../models/veterinario';
 
 @Injectable({
@@ -12,5 +12,11 @@ export class VeterinarioService {
 
   listarVeterinarios(): Observable<Veterinario[]> {
     return this.http.get<Veterinario[]>(this.urlBase);
+  }
+
+  obtenerPorUsuario(usuarioId: number): Observable<Veterinario | undefined> {
+    return this.listarVeterinarios().pipe(
+      map(vets => vets.find(v => v.usuario.id === usuarioId))
+    );
   }
 }

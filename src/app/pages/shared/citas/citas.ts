@@ -6,11 +6,12 @@ import { VeterinarioService } from '../../../services/veterinario-service';
 import { Cita } from '../../../models/cita';
 import { Mascota } from '../../../models/mascota';
 import { Veterinario } from '../../../models/veterinario';
+import { ConfirmModal } from '../../../components/confirm-modal/confirm-modal';
 
 @Component({
   selector: 'app-citas',
   standalone: true,
-  imports: [ReactiveFormsModule],
+  imports: [ReactiveFormsModule, ConfirmModal],
   templateUrl: './citas.html',
   styleUrl: './citas.css'
 })
@@ -27,6 +28,9 @@ export class Citas implements OnInit {
   mostrarFormulario = false;
   citaEditandoId: number | null = null;
   mensajeError = signal('');
+
+  mostrarConfirmacion = false;
+  idACancelar: number | null = null;
 
   estados = ['PENDIENTE', 'COMPLETADA', 'CANCELADA', 'NO_ASISTIO'];
 
@@ -120,13 +124,6 @@ export class Citas implements OnInit {
     });
   }
 
-  cancelar(id: number) {
-    this.citaService.cancelarCita(id).subscribe({
-      next: () => this.cargarCitas(),
-      error: () => this.mensajeError.set('No se pudo cancelar la cita')
-    });
-  }
-
   claseEstado(estado: string): string {
     const base = 'text-label-sm px-sm py-xs rounded-full border-none focus:outline-none focus:ring-2 focus:ring-primary';
     switch (estado) {
@@ -141,4 +138,24 @@ export class Citas implements OnInit {
     }
   }
 
+  pedirCancelar(id: number) {
+    this.idACancelar = id;
+    this.mostrarConfirmacion = true;
+  }
+
+  confirmarCancelacion() {
+    this.mostrarConfirmacion = false;
+    if (this.idACancelar === null) return;
+
+    this.citaService.cancelarCita(this.idACancelar).subscribe({
+      next: () => this.cargarCitas(),
+      error: () => this.mensajeError.set('No se pudo cancelar la cita')
+    });
+    this.idACancelar = null;
+  }
+
+  cerrarConfirmacion() {
+    this.mostrarConfirmacion = false;
+    this.idACancelar = null;
+  }
 }

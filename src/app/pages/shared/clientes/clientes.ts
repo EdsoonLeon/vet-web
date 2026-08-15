@@ -2,11 +2,12 @@ import { Component, OnInit, inject, ChangeDetectorRef } from '@angular/core';
 import { ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
 import { ClienteService } from '../../../services/cliente-service';
 import { Cliente } from '../../../models/cliente';
+import { ConfirmModal } from '../../../components/confirm-modal/confirm-modal';
 
 @Component({
   selector: 'app-clientes',
   standalone: true,
-  imports: [ReactiveFormsModule],
+  imports: [ReactiveFormsModule, ConfirmModal],
   templateUrl: './clientes.html',
   styleUrl: './clientes.css'
 })
@@ -19,6 +20,9 @@ export class Clientes implements OnInit {
   mostrarFormulario = false;
   clienteEditandoId: number | null = null;
   mensajeError = '';
+
+  mostrarConfirmacion = false;
+  idAEliminar: number | null = null;
 
   clienteForm = this.fb.group({
     nombre: ['', Validators.required],
@@ -90,11 +94,25 @@ export class Clientes implements OnInit {
     }
   }
 
-  eliminar(id: number) {
-    this.clienteService.eliminarCliente(id).subscribe({
+  pedirEliminar(id: number) {
+    this.idAEliminar = id;
+    this.mostrarConfirmacion = true;
+  }
+
+  confirmarEliminar() {
+    this.mostrarConfirmacion = false;
+    if (this.idAEliminar === null) return;
+
+    this.clienteService.eliminarCliente(this.idAEliminar).subscribe({
       next: () => this.cargarClientes(),
       error: () => { this.mensajeError = 'No se pudo desactivar el cliente'; this.cdr.markForCheck(); }
     });
+    this.idAEliminar = null;
+  }
+
+  cancelarEliminar() {
+    this.mostrarConfirmacion = false;
+    this.idAEliminar = null;
   }
 
   activar(id: number) {
