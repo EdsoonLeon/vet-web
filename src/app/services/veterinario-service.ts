@@ -14,6 +14,10 @@ export class VeterinarioService {
     return this.http.get<Veterinario[]>(this.urlBase);
   }
 
+  registrarVeterinario(datos: any): Observable<Veterinario> {
+    return this.http.post<Veterinario>(`${this.urlBase}/registrar`, datos);
+  }
+
   obtenerPorUsuario(usuarioId: number): Observable<Veterinario | undefined> {
     return this.listarVeterinarios().pipe(
       map(vets => vets.find(v => v.usuario.id === usuarioId))

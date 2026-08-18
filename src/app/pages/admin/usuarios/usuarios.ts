@@ -3,6 +3,7 @@ import { ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
 import { UsuarioService } from '../../../services/usuario-service';
 import { UsuarioAuthService } from '../../../services/usuario-auth-service';
 import { RolService } from '../../../services/rol-service';
+import { VeterinarioService } from '../../../services/veterinario-service';
 import { Usuario } from '../../../models/usuario';
 import { Rol } from '../../../models/rol';
 import { ConfirmModal } from '../../../components/confirm-modal/confirm-modal';
@@ -18,6 +19,7 @@ export class Usuarios implements OnInit {
   private usuarioService = inject(UsuarioService);
   private usuarioAuthService = inject(UsuarioAuthService);
   private rolService = inject(RolService);
+  private veterinarioService = inject(VeterinarioService);
   private fb = inject(FormBuilder);
 
   usuarios = signal<Usuario[]>([]);
@@ -35,6 +37,9 @@ export class Usuarios implements OnInit {
     correo: ['', [Validators.required, Validators.email]],
     clave: [''],
     rolId: ['', Validators.required],
+    especialidad: [''],
+    colegiatura: [''],
+    edadVeterinario: [''],
   });
 
   ngOnInit() {
@@ -55,6 +60,13 @@ export class Usuarios implements OnInit {
     });
   }
 
+  get rolVeterinarioSeleccionado(): boolean {
+    if (this.usuarioEditandoId) return false;
+    const rolId = this.usuarioForm.get('rolId')?.value;
+    const rol = this.roles().find(r => String(r.id) === String(rolId));
+    return rol?.nombre === 'VETERINARIO';
+  }
+
   abrirNuevo() {
     this.usuarioEditandoId = null;
     this.usuarioForm.reset();
@@ -73,6 +85,9 @@ export class Usuarios implements OnInit {
       correo: usuario.correo,
       clave: '',
       rolId: String(usuario.rol.id),
+      especialidad: '',
+      colegiatura: '',
+      edadVeterinario: '',
     });
     this.mostrarFormulario = true;
   }
@@ -91,6 +106,33 @@ export class Usuarios implements OnInit {
 
     const valores = this.usuarioForm.value;
 
+    // Caso especial: nuevo usuario con rol VETERINARIO
+    if (this.rolVeterinarioSeleccionado) {
+      if (!valores.especialidad || !valores.colegiatura || !valores.edadVeterinario) {
+        this.mensajeError.set('Completa especialidad, colegiatura y edad para el veterinario');
+        return;
+      }
+
+      const datosRegistro = {
+        especialidad: valores.especialidad,
+        colegiatura: valores.colegiatura,
+        edad: Number(valores.edadVeterinario),
+        usuario: {
+          nombre: valores.nombre,
+          apellido: valores.apellido,
+          correo: valores.correo,
+          clave: valores.clave,
+        }
+      };
+
+      this.veterinarioService.registrarVeterinario(datosRegistro).subscribe({
+        next: () => { this.cargarUsuarios(); this.cerrarFormulario(); },
+        error: () => this.mensajeError.set('No se pudo registrar el veterinario')
+      });
+      return;
+    }
+
+    // Flujo normal: Admin, Recepcionista, o edición de cualquier usuario
     if (this.usuarioEditandoId) {
       const datosEdicion: any = {
         nombre: valores.nombre,

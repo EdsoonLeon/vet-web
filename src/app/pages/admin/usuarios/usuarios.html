@@ -42,6 +42,21 @@
           </select>
         </div>
 
+        @if (rolVeterinarioSeleccionado) {
+          <div class="space-y-1.5">
+            <label class="text-label-sm text-on-surface-variant uppercase tracking-wider block">Especialidad</label>
+            <input formControlName="especialidad" type="text" placeholder="Cirugía, Dermatología..." class="w-full h-11 px-md bg-surface rounded-lg text-on-surface text-body-md focus:outline-none focus:ring-2 focus:ring-primary" />
+          </div>
+          <div class="space-y-1.5">
+            <label class="text-label-sm text-on-surface-variant uppercase tracking-wider block">Colegiatura</label>
+            <input formControlName="colegiatura" type="text" class="w-full h-11 px-md bg-surface rounded-lg text-on-surface text-body-md focus:outline-none focus:ring-2 focus:ring-primary" />
+          </div>
+          <div class="space-y-1.5">
+            <label class="text-label-sm text-on-surface-variant uppercase tracking-wider block">Edad</label>
+            <input formControlName="edadVeterinario" type="number" min="18" class="w-full h-11 px-md bg-surface rounded-lg text-on-surface text-body-md focus:outline-none focus:ring-2 focus:ring-primary" />
+          </div>
+        }
+
         <div class="space-y-1.5 md:col-span-2">
           <label class="text-label-sm text-on-surface-variant uppercase tracking-wider block">
             Contraseña @if (usuarioEditandoId) { <span class="normal-case">(dejar vacío para no cambiarla)</span> }
