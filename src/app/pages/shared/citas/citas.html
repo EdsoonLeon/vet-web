@@ -87,13 +87,12 @@
             <td class="px-md py-sm text-body-sm text-on-surface-variant">{{ cita.veterinario.usuario.nombre }} {{ cita.veterinario.usuario.apellido }}</td>
             <td class="px-md py-sm">
               <select
-                [value]="cita.estado"
                 (change)="cambiarEstado(cita.id, $any($event.target).value)"
                 autocomplete="off"
                 [class]="claseEstado(cita.estado)"
               >
                 @for (estado of estados; track estado) {
-                  <option [value]="estado">{{ estado }}</option>
+                  <option [value]="estado" [selected]="estado === cita.estado">{{ estado }}</option>
                 }
               </select>
             </td>
