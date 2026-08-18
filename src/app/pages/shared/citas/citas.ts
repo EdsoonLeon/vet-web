@@ -1,5 +1,5 @@
 import { Component, OnInit, inject, signal, computed } from '@angular/core';
-import { ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
 import { CitaService } from '../../../services/cita-service';
 import { MascotaService } from '../../../services/mascota-service';
 import { VeterinarioService } from '../../../services/veterinario-service';
@@ -11,7 +11,7 @@ import { ConfirmModal } from '../../../components/confirm-modal/confirm-modal';
 @Component({
   selector: 'app-citas',
   standalone: true,
-  imports: [ReactiveFormsModule, ConfirmModal],
+  imports: [ReactiveFormsModule, FormsModule, ConfirmModal],
   templateUrl: './citas.html',
   styleUrl: './citas.css'
 })
@@ -31,6 +31,21 @@ export class Citas implements OnInit {
 
   mostrarConfirmacion = false;
   idACancelar: number | null = null;
+
+  terminoBusqueda = signal('');
+
+  citasFiltradas = computed(() => {
+    const termino = this.terminoBusqueda().toLowerCase().trim();
+    const lista = this.citas();
+    if (!termino) return lista;
+
+    return lista.filter(c =>
+      c.mascota.nombre.toLowerCase().includes(termino) ||
+      c.veterinario.usuario.nombre.toLowerCase().includes(termino) ||
+      c.veterinario.usuario.apellido.toLowerCase().includes(termino) ||
+      c.estado.toLowerCase().includes(termino)
+    );
+  });
 
   estados = ['PENDIENTE', 'COMPLETADA', 'CANCELADA', 'NO_ASISTIO'];
 

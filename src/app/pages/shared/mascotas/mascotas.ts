@@ -1,5 +1,5 @@
 import { Component, OnInit, inject, signal, computed } from '@angular/core';
-import { ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
 import { MascotaService } from '../../../services/mascota-service';
 import { ClienteService } from '../../../services/cliente-service';
 import { Mascota } from '../../../models/mascota';
@@ -9,7 +9,7 @@ import { ConfirmModal } from '../../../components/confirm-modal/confirm-modal';
 @Component({
   selector: 'app-mascotas',
   standalone: true,
-  imports: [ReactiveFormsModule, ConfirmModal],
+  imports: [ReactiveFormsModule, FormsModule, ConfirmModal],
   templateUrl: './mascotas.html',
   styleUrl: './mascotas.css'
 })
@@ -27,6 +27,22 @@ export class Mascotas implements OnInit {
 
   mostrarConfirmacion = false;
   idAEliminar: number | null = null;
+
+  terminoBusqueda = signal('');
+
+  mascotasFiltradas = computed(() => {
+    const termino = this.terminoBusqueda().toLowerCase().trim();
+    const lista = this.mascotas();
+    if (!termino) return lista;
+
+    return lista.filter(m =>
+      m.nombre.toLowerCase().includes(termino) ||
+      m.especie.toLowerCase().includes(termino) ||
+      m.raza.toLowerCase().includes(termino) ||
+      m.cliente.nombre.toLowerCase().includes(termino) ||
+      m.cliente.apellido.toLowerCase().includes(termino)
+    );
+  });
 
   mascotaForm = this.fb.group({
     nombre: ['', Validators.required],

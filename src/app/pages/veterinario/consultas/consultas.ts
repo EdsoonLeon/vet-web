@@ -1,5 +1,5 @@
-import { Component, OnInit, inject, signal } from '@angular/core';
-import { ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
+import { Component, OnInit, inject, signal, computed } from '@angular/core';
+import { FormsModule, ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
 import { ConsultaService } from '../../../services/consulta-service';
 import { MascotaService } from '../../../services/mascota-service';
 import { VeterinarioService } from '../../../services/veterinario-service';
@@ -11,7 +11,7 @@ import { ConfirmModal } from '../../../components/confirm-modal/confirm-modal';
 @Component({
   selector: 'app-consultas',
   standalone: true,
-  imports: [ReactiveFormsModule, ConfirmModal],
+  imports: [ReactiveFormsModule, FormsModule, ConfirmModal],
   templateUrl: './consultas.html',
   styleUrl: './consultas.css'
 })
@@ -32,6 +32,20 @@ export class Consultas implements OnInit {
 
   mostrarConfirmacion = false;
   idAEliminar: number | null = null;
+
+  terminoBusqueda = signal('');
+
+  consultasFiltradas = computed(() => {
+    const termino = this.terminoBusqueda().toLowerCase().trim();
+    const lista = this.consultas();
+    if (!termino) return lista;
+
+    return lista.filter(c =>
+      c.mascota.nombre.toLowerCase().includes(termino) ||
+      c.diagnostico.toLowerCase().includes(termino) ||
+      c.tratamiento.toLowerCase().includes(termino)
+    );
+  });
 
   consultaForm = this.fb.group({
     fecha: ['', Validators.required],

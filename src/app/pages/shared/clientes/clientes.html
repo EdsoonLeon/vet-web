@@ -10,6 +10,16 @@
     </button>
   </div>
 
+  <div class="relative">
+    <span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-on-surface-variant">search</span>
+    <input
+      [(ngModel)]="terminoBusqueda"
+      type="text"
+      placeholder="Buscar por nombre, correo o teléfono..."
+      class="w-full h-11 pl-12 pr-4 bg-surface rounded-full text-on-surface text-body-md focus:outline-none focus:ring-2 focus:ring-primary"
+    />
+  </div>
+
   @if (mensajeError) {
     <p class="text-label-sm text-error">{{ mensajeError }}</p>
   }
@@ -65,7 +75,7 @@
         </tr>
       </thead>
       <tbody>
-        @for (cliente of clientes; track cliente.id) {
+        @for (cliente of clientesFiltrados; track cliente.id) {
           <tr class="border-b border-outline-variant/10 hover:bg-surface-container/50 transition-colors">
             <td class="px-md py-sm text-body-sm text-on-surface">{{ cliente.nombre }} {{ cliente.apellido }}</td>
             <td class="px-md py-sm text-body-sm text-on-surface-variant">{{ cliente.telefono }}</td>

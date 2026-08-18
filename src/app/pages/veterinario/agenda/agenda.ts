@@ -1,4 +1,5 @@
-import { Component, OnInit, inject, signal } from '@angular/core';
+import { Component, OnInit, inject, signal, computed } from '@angular/core';
+import { FormsModule } from '@angular/forms';
 import { CitaService } from '../../../services/cita-service';
 import { VeterinarioService } from '../../../services/veterinario-service';
 import { UsuarioAuthService } from '../../../services/usuario-auth-service';
@@ -7,7 +8,7 @@ import { Cita } from '../../../models/cita';
 @Component({
   selector: 'app-agenda',
   standalone: true,
-  imports: [],
+  imports: [FormsModule],
   templateUrl: './agenda.html',
   styleUrl: './agenda.css'
 })
@@ -21,6 +22,21 @@ export class Agenda implements OnInit {
   veterinarioId: number | null = null;
 
   estados = ['PENDIENTE', 'COMPLETADA', 'CANCELADA', 'NO_ASISTIO'];
+
+  terminoBusqueda = signal('');
+
+  citasFiltradas = computed(() => {
+    const termino = this.terminoBusqueda().toLowerCase().trim();
+    const lista = this.citas();
+    if (!termino) return lista;
+
+    return lista.filter(c =>
+      c.mascota.nombre.toLowerCase().includes(termino) ||
+      c.mascota.cliente.nombre.toLowerCase().includes(termino) ||
+      c.mascota.cliente.apellido.toLowerCase().includes(termino) ||
+      c.estado.toLowerCase().includes(termino)
+    );
+  });
 
   ngOnInit() {
     const usuario = this.authService.obtenerUsuario();

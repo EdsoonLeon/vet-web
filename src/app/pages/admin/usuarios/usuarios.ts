@@ -1,5 +1,5 @@
-import { Component, OnInit, inject, signal } from '@angular/core';
-import { ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
+import { Component, OnInit, inject, signal, computed } from '@angular/core';
+import { FormsModule, ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
 import { UsuarioService } from '../../../services/usuario-service';
 import { UsuarioAuthService } from '../../../services/usuario-auth-service';
 import { RolService } from '../../../services/rol-service';
@@ -11,7 +11,7 @@ import { ConfirmModal } from '../../../components/confirm-modal/confirm-modal';
 @Component({
   selector: 'app-usuarios',
   standalone: true,
-  imports: [ReactiveFormsModule, ConfirmModal],
+  imports: [ReactiveFormsModule, FormsModule, ConfirmModal],
   templateUrl: './usuarios.html',
   styleUrl: './usuarios.css'
 })
@@ -30,6 +30,21 @@ export class Usuarios implements OnInit {
 
   mostrarConfirmacion = false;
   idAEliminar: number | null = null;
+
+  terminoBusqueda = signal('');
+
+  usuariosFiltrados = computed(() => {
+    const termino = this.terminoBusqueda().toLowerCase().trim();
+    const lista = this.usuarios();
+    if (!termino) return lista;
+
+    return lista.filter(u =>
+      u.nombre.toLowerCase().includes(termino) ||
+      u.apellido.toLowerCase().includes(termino) ||
+      u.correo.toLowerCase().includes(termino) ||
+      u.rol.nombre.toLowerCase().includes(termino)
+    );
+  });
 
   usuarioForm = this.fb.group({
     nombre: ['', Validators.required],
@@ -106,7 +121,6 @@ export class Usuarios implements OnInit {
 
     const valores = this.usuarioForm.value;
 
-    // Caso especial: nuevo usuario con rol VETERINARIO
     if (this.rolVeterinarioSeleccionado) {
       if (!valores.especialidad || !valores.colegiatura || !valores.edadVeterinario) {
         this.mensajeError.set('Completa especialidad, colegiatura y edad para el veterinario');
@@ -132,7 +146,6 @@ export class Usuarios implements OnInit {
       return;
     }
 
-    // Flujo normal: Admin, Recepcionista, o edición de cualquier usuario
     if (this.usuarioEditandoId) {
       const datosEdicion: any = {
         nombre: valores.nombre,

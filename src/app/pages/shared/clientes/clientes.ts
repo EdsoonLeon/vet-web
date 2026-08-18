@@ -1,5 +1,5 @@
 import { Component, OnInit, inject, ChangeDetectorRef } from '@angular/core';
-import { ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
 import { ClienteService } from '../../../services/cliente-service';
 import { Cliente } from '../../../models/cliente';
 import { ConfirmModal } from '../../../components/confirm-modal/confirm-modal';
@@ -7,7 +7,7 @@ import { ConfirmModal } from '../../../components/confirm-modal/confirm-modal';
 @Component({
   selector: 'app-clientes',
   standalone: true,
-  imports: [ReactiveFormsModule, ConfirmModal],
+  imports: [ReactiveFormsModule, FormsModule, ConfirmModal],
   templateUrl: './clientes.html',
   styleUrl: './clientes.css'
 })
@@ -24,6 +24,8 @@ export class Clientes implements OnInit {
   mostrarConfirmacion = false;
   idAEliminar: number | null = null;
 
+  terminoBusqueda = '';
+
   clienteForm = this.fb.group({
     nombre: ['', Validators.required],
     apellido: ['', Validators.required],
@@ -31,6 +33,18 @@ export class Clientes implements OnInit {
     direccion: ['', Validators.required],
     correo: ['', [Validators.required, Validators.email]],
   });
+
+  get clientesFiltrados(): Cliente[] {
+    const termino = this.terminoBusqueda.toLowerCase().trim();
+    if (!termino) return this.clientes;
+
+    return this.clientes.filter(c =>
+      c.nombre.toLowerCase().includes(termino) ||
+      c.apellido.toLowerCase().includes(termino) ||
+      c.correo.toLowerCase().includes(termino) ||
+      c.telefono.includes(termino)
+    );
+  }
 
   ngOnInit() {
     this.cargarClientes();
